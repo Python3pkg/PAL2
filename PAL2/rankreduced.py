@@ -8,7 +8,7 @@
 # When using this code, please cite "van Haasteren & Vallisneri (2014)
 
 
-from __future__ import division
+
 
 import numpy as np
 import scipy.linalg as sl
@@ -305,7 +305,7 @@ def get_rr_cholesky(N, Fmat, psd):
     
     # Construct L
     L = np.tril(np.dot(Z, B.T * np.sqrt(D)), -1)
-    L[range(n), range(n)] = np.sqrt(D)
+    L[list(range(n)), list(range(n))] = np.sqrt(D)
 
     return L
 
@@ -507,10 +507,10 @@ if __name__ == '__main__':
     # Tolerance at the 0.1% level
     atol = 1e-3
     tol = atol * np.mean(np.fabs(Can))
-    print "Crr == Can:", np.allclose(Crr, Can, atol=tol)
-    print "WCrr^-1 == Cov^-1:", np.allclose(np.eye(len(Crrinv)), \
-            np.dot(Crrinv, Cov), atol=atol)
-    print "LL^T == Cov:", np.allclose(np.dot(CrrL, CrrL.T), Cov, atol=tol)
+    print("Crr == Can:", np.allclose(Crr, Can, atol=tol))
+    print("WCrr^-1 == Cov^-1:", np.allclose(np.eye(len(Crrinv)), \
+            np.dot(Crrinv, Cov), atol=atol))
+    print("LL^T == Cov:", np.allclose(np.dot(CrrL, CrrL.T), Cov, atol=tol))
 
 
     # Some random time-series
@@ -520,21 +520,21 @@ if __name__ == '__main__':
     # Check the inversion
     Cx, logdet = get_rr_Cix(W, Fmat, rrpsd, x)
     CiCx = get_rr_Cx(W, Fmat, rrpsd, Cx)
-    print "CiCx == x:", np.allclose(CiCx, x, atol=atol*np.mean(np.fabs(x)))
+    print("CiCx == x:", np.allclose(CiCx, x, atol=atol*np.mean(np.fabs(x))))
 
     # Figure out whether the O(n) Cholesky decompositions are ok
     # (should work for any y)
     #L = sl.cholesky(Cov, lower=True)    # Use L or CrrL ? 
     Ly = get_rr_Lx(W, Fmat, rrpsd, y)
     Lya = np.dot(CrrL, y)
-    print "Ly == Lya:", np.allclose(Ly, Lya, atol=atol*np.mean(np.fabs(Ly)))
+    print("Ly == Lya:", np.allclose(Ly, Lya, atol=atol*np.mean(np.fabs(Ly))))
 
     Lix = get_rr_Lix(W, Fmat, rrpsd, x)
-    print "L Lix == x:", np.allclose(np.dot(CrrL, Lix), x, atol=atol*np.mean(np.fabs(x)))
+    print("L Lix == x:", np.allclose(np.dot(CrrL, Lix), x, atol=atol*np.mean(np.fabs(x))))
 
     LTy = get_rr_Ux(W, Fmat, rrpsd, y)
     LTya = np.dot(CrrL.T, y)
-    print "LTy == LTya:", np.allclose(LTy, LTya, atol=atol*np.mean(np.fabs(LTy)))
+    print("LTy == LTya:", np.allclose(LTy, LTya, atol=atol*np.mean(np.fabs(LTy))))
 
     LiTx = get_rr_Uix(W, Fmat, rrpsd, y)
-    print "LT LiTx == x:", np.allclose(np.dot(CrrL.T, LiTx), x, atol=atol*np.mean(np.fabs(x)))
+    print("LT LiTx == x:", np.allclose(np.dot(CrrL.T, LiTx), x, atol=atol*np.mean(np.fabs(x))))

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+
 
 import numpy as np
 import scipy.stats as ss
@@ -12,13 +12,13 @@ import time
 try:
     from mpi4py import MPI
 except ImportError:
-    print 'Do not have mpi4py package.'
-    import nompi4py as MPI
+    print('Do not have mpi4py package.')
+    from . import nompi4py as MPI
 
 try:
     import acor
 except ImportError:
-    print 'Do not have acor package'
+    print('Do not have acor package')
     pass
 
 
@@ -182,12 +182,12 @@ class PTSampler(object):
         self.resumeLength = 0
         if self.resume and os.path.isfile(self.fname):
             if self.verbose:
-                print 'Resuming run from chain file {0}'.format(self.fname)
+                print('Resuming run from chain file {0}'.format(self.fname))
             try:
                 self.resumechain = np.loadtxt(self.fname)
                 self.resumeLength = self.resumechain.shape[0]
             except ValueError:
-                print 'WARNING: Cant read in file. Removing last line.'
+                print('WARNING: Cant read in file. Removing last line.')
                 os.system('sed -ie \'$d\' {0}'.format(self.fname))
                 self.resumechain = np.loadtxt(self.fname)
                 self.resumeLength = self.resumechain.shape[0]
@@ -325,13 +325,13 @@ class PTSampler(object):
             # stop if reached maximum number of iterations
             if self.MPIrank == 0 and iter >= self.Niter - 1:
                 if self.verbose:
-                    print '\nRun Complete'
+                    print('\nRun Complete')
                 runComplete = True
 
             # stop if reached effective number of samples
             if self.MPIrank == 0 and int(Neff) > self.neff:
                 if self.verbose:
-                    print '\nRun Complete with {0} effective samples'.format(int(Neff))
+                    print('\nRun Complete with {0} effective samples'.format(int(Neff)))
                 runComplete = True
 
             if self.MPIrank == 0 and runComplete:
@@ -414,7 +414,7 @@ class PTSampler(object):
         # after burn in, add DE jumps
         if (iter - 1) == self.burn and self.MPIrank == 0:
             if self.verbose:
-                print 'Adding DE jump with weight {0}'.format(self.DEweight)
+                print('Adding DE jump with weight {0}'.format(self.DEweight))
             self.addProposalToCycle(self.DEJump, self.DEweight)
 
             # randomize cycle
@@ -902,7 +902,7 @@ class PTSampler(object):
 
         # check for 0 weight
         if weight == 0:
-            print 'ERROR: Can not have 0 weight in proposal cycle!'
+            print('ERROR: Can not have 0 weight in proposal cycle!')
             sys.exit()
 
         # add proposal to cycle

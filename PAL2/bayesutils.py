@@ -1,4 +1,4 @@
-from __future__ import division
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.interpolate as interp
@@ -647,7 +647,7 @@ def makespectrumplot(ax, chain, parstart=1, numfreqs=10, freqs=None, \
     yerr = np.zeros(len(ufreqs))
 
     if len(ufreqs) != (numfreqs):
-        print "WARNING: parameter range does not correspond to #frequencies"
+        print("WARNING: parameter range does not correspond to #frequencies")
 
     for ii in range(numfreqs):
         fmin, fmax = confinterval(chain[:, parstart+ii], sigma=0.68)

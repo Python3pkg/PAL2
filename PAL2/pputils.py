@@ -1,4 +1,4 @@
-from __future__ import division
+
 import numpy as np
 import matplotlib.pyplot as plt
 import glob, os
@@ -530,7 +530,7 @@ class ChainPP(object):
                 pmodel = OrderedDict(json.load(f))
             pmodel['likfunc'] = 'mark6'
             # load model
-            pulsars = map(str, pmodel['pulsarnames'])
+            pulsars = list(map(str, pmodel['pulsarnames']))
             self.model = PALmodels.PTAmodels(self.h5file, pulsars=pulsars)
             self.model.initModel(pmodel, memsave=True, verbose=True)
             p0 = self.model.initParameters()
@@ -702,7 +702,7 @@ class ChainPP(object):
             raise NotImplementedError('Must input model to make residuals')
         
         x = self.get_ml_values(mtype=mtype)
-        p0 = x.values()
+        p0 = list(x.values())
 
         for ct, p in enumerate(self.model.psr):
             #ntmpars = len(p.ptmdescription)
@@ -785,7 +785,7 @@ class ChainPP(object):
     def get_t2_noise_pars(self, mtype='full'):
         x = self.get_ml_values(mtype=mtype)
         fout = open(self.outdir + '/t2_noise.txt', 'w')
-        for key, val in x.items():
+        for key, val in list(x.items()):
             if 'efac' in key:
                 fout.write('TNEF -f {0} {1}\n'.format(
                     key.split('efac-')[-1], val))
@@ -805,11 +805,11 @@ class ChainPP(object):
         x = self.get_ml_values(mtype=mtype)
         efacs = {} 
         fout = open(self.outdir + '/t1_noise.txt', 'w')
-        for key, val in x.items():
+        for key, val in list(x.items()):
             if 'efac' in key:
                 efacs[key.split('efac-')[-1]] = val
                 
-        for key, val in x.items():
+        for key, val in list(x.items()):
             if 'efac' in key:
                 flag = key.split('efac-')[-1]
                 fout.write('T2EFAC -f %s %1.4f\n'%(flag, val))

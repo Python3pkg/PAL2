@@ -1,4 +1,4 @@
-from __future__ import division
+
 import numpy as np
 import scipy.special as ss
 import scipy.linalg as sl
@@ -8,7 +8,7 @@ import scipy.interpolate as interp
 try:
     import healpy as hp
 except ImportError:
-    print 'WARNING: No healpy installed'
+    print('WARNING: No healpy installed')
     hp = None
 import math
 import numpy.polynomial.hermite as herm
@@ -446,7 +446,7 @@ def createResiduals(psr, gwtheta, gwphi, mc, dist, fgw, phase0, psi, inc, pdist=
         # phases
         phase = phase0 + omega * toas
         if pphase is not None:
-            print 'In here', pphase[ct]
+            print('In here', pphase[ct])
             phase_p = pphase[ct] + omega_p * toas
         else:
             phase_p = phase0 + 1/32/mc**(5/3) * (w0**(-5/3) - omega_p**(-5/3)) + omega_p*toas
@@ -904,7 +904,7 @@ def createDesignmatrix(toas, freqs=None, RADEC=False, PX=False, DMX=False):
         model.append('PX')
     if DMX:
         if len(toas) % 2 != 0:
-            print "ERROR: len(toas) must be a factor of 2 for DMX!!"
+            print("ERROR: len(toas) must be a factor of 2 for DMX!!")
             sys.exit()
 
         model += ['DMX' for ii in range(int(len(toas)/2))]
@@ -1076,7 +1076,7 @@ def exploderMatrix_slow(toas, freqs=None, dt=1200, flags=None):
     while not np.all(processed):
         npindex = np.where(processed == False)[0]
         ind = npindex[0]
-        print ind
+        print(ind)
         satmin = toas[ind] - dt
         satmax = toas[ind] + dt
 
@@ -1488,12 +1488,12 @@ def computeORF(psr):
     ORF = np.zeros(int(npsr*(npsr-1)/2.))
     phati = np.zeros(3)
     phatj = np.zeros(3)
-    for ll in xrange(0, npsr):
+    for ll in range(0, npsr):
         phati[0] = np.cos(psr[ll].phi) * np.sin(psr[ll].theta)
         phati[1] = np.sin(psr[ll].phi) * np.sin(psr[ll].theta)
         phati[2] = np.cos(psr[ll].theta)
 
-        for kk in xrange(ll+1, npsr):
+        for kk in range(ll+1, npsr):
             phatj[0] = np.cos(psr[kk].phi) * np.sin(psr[kk].theta)
             phatj[1] = np.sin(psr[kk].phi) * np.sin(psr[kk].theta)
             phatj[2] = np.cos(psr[kk].theta)
@@ -1521,12 +1521,12 @@ def computeORFMatrix(psr):
     ORF = np.zeros((npsr, npsr))
     phati = np.zeros(3)
     phatj = np.zeros(3)
-    for ll in xrange(0, npsr):
+    for ll in range(0, npsr):
         phati[0] = np.cos(psr[ll].phi) * np.sin(psr[ll].theta)
         phati[1] = np.sin(psr[ll].phi) * np.sin(psr[ll].theta)
         phati[2] = np.cos(psr[ll].theta)
 
-        for kk in xrange(0, npsr):
+        for kk in range(0, npsr):
             phatj[0] = np.cos(psr[kk].phi) * np.sin(psr[kk].theta)
             phatj[1] = np.sin(psr[kk].phi) * np.sin(psr[kk].theta)
             phatj[2] = np.cos(psr[kk].theta)
@@ -1809,7 +1809,7 @@ def createGWB(psr, Amp, gam, DM=False, noCorr=False, seed=None, turnover=False, 
             f = interp.interp1d(ut, Res[ll,:], kind='linear')
 
             if DM and len(psr) == 1:
-                print 'adding DM to toas'
+                print('adding DM to toas')
                 res_gw.append(f(psr[ll].toas)/((2.3687e-16)*psr[ll].freqs**2))
             else:
                 res_gw.append(f(psr[ll].toas))
@@ -1817,7 +1817,7 @@ def createGWB(psr, Amp, gam, DM=False, noCorr=False, seed=None, turnover=False, 
             ntoa = len(psr[ll].toas)
             res = Res_t[ll,10:(ntoa+10)]
             if DM and len(psr) == 1:
-                print 'adding DM to toas'
+                print('adding DM to toas')
                 res_gw.append(res/((2.3687e-16)*psr[ll].freqs**2))
             else:
                 res_gw.append(res)
@@ -2045,14 +2045,14 @@ def fixNoiseValues(ptasignals, vals, pars, bvary=False, verbose=True):
                 flag = p.split('efac-')[-1]
                 if flag in sig['flagvalue']:
                     if verbose:
-                        print 'Setting efac {0} value to {1}'.format(sig['flagvalue'], \
-                                                                     vals[ct])
+                        print('Setting efac {0} value to {1}'.format(sig['flagvalue'], \
+                                                                     vals[ct]))
                     sig['pstart'][0] = vals[ct]
                     sig['bvary'][0] = bvary
                 elif flag == 'efac':
                     if verbose:
-                        print 'Setting efac {0} value to {1}'.format(sig['flagvalue'], \
-                                                                     vals[ct])
+                        print('Setting efac {0} value to {1}'.format(sig['flagvalue'], \
+                                                                     vals[ct]))
                     sig['pstart'][0] = vals[ct]
                     sig['bvary'][0] = bvary
                     
@@ -2064,14 +2064,14 @@ def fixNoiseValues(ptasignals, vals, pars, bvary=False, verbose=True):
                     if vals[ct] > 0:
                         vals[ct] = np.log10(vals[ct])
                     if verbose:
-                        print 'Setting equad {0} value to {1}'.format(sig['flagvalue'], \
-                                                                      vals[ct])
+                        print('Setting equad {0} value to {1}'.format(sig['flagvalue'], \
+                                                                      vals[ct]))
                     sig['pstart'][0] = vals[ct]
                     sig['bvary'][0] = bvary
                 elif flag == 'equad':
                     if verbose:
-                        print 'Setting equad {0} value to {1}'.format(sig['flagvalue'], \
-                                                                     vals[ct])
+                        print('Setting equad {0} value to {1}'.format(sig['flagvalue'], \
+                                                                     vals[ct]))
                     sig['pstart'][0] = vals[ct]
                     sig['bvary'][0] = bvary
 
@@ -2083,14 +2083,14 @@ def fixNoiseValues(ptasignals, vals, pars, bvary=False, verbose=True):
                     if vals[ct] > 0:
                         vals[ct] = np.log10(vals[ct])
                     if verbose:
-                        print 'Setting ecorr {0} value to {1}'.format(sig['flagvalue'], \
-                                                                      vals[ct])
+                        print('Setting ecorr {0} value to {1}'.format(sig['flagvalue'], \
+                                                                      vals[ct]))
                     sig['pstart'][0] = vals[ct]
                     sig['bvary'][0] = bvary
                 elif flag == 'jitter_q':
                     if verbose:
-                        print 'Setting ecorr {0} value to {1}'.format(sig['flagvalue'], \
-                                                                     vals[ct])
+                        print('Setting ecorr {0} value to {1}'.format(sig['flagvalue'], \
+                                                                     vals[ct]))
                     sig['pstart'][0] = vals[ct]
                     sig['bvary'][0] = bvary
 
@@ -2099,12 +2099,12 @@ def fixNoiseValues(ptasignals, vals, pars, bvary=False, verbose=True):
                 sig['bvary'][1] = bvary
                 if p == 'RN-Amplitude':
                     if verbose:
-                        print 'Setting RN Amp value to {0}'.format(vals[ct])
+                        print('Setting RN Amp value to {0}'.format(vals[ct]))
                     sig['pstart'][0] = vals[ct]
                     sig['bvary'][0] = bvary
                 if p == 'RN-spectral-index':
                     if verbose:
-                        print 'Setting RN spectral index value to {0}'.format(vals[ct])
+                        print('Setting RN spectral index value to {0}'.format(vals[ct]))
                     sig['pstart'][1] = vals[ct]
                     sig['bvary'][1] = bvary
 
@@ -2819,7 +2819,7 @@ def CorrBasis(psr_locs, nside=32, direction='origin'):
     pphi = psr_locs[:,0]
     ptheta = psr_locs[:,1]
 
-    print pphi, ptheta
+    print(pphi, ptheta)
 
     # Create the pixels
     npixels = hp.nside2npix(nside)
@@ -2833,9 +2833,9 @@ def CorrBasis(psr_locs, nside=32, direction='origin'):
 
     # Create the signal response matrix
     F_e = signalResponse_fast(ptheta, pphi, gwtheta, gwphi)
-    print F_e.shape
+    print(F_e.shape)
     sh00 = mapFromClm_fast(np.array([1.0]), nside)
-    print sh00.shape
+    print(sh00.shape)
 
     basis = []
     for ii in range(npixels):
@@ -3218,7 +3218,7 @@ def compute_eccentric_residuals(psr, gwtheta, gwphi, mc,
 
             if np.abs(Fc0-Fc1) > 1/Tobs:
                 print('WARNING: Frequency is evolving over more than one frequency bin.')
-                print('F0 = {0}, F1 = {1}, delta f = {2}'.format(Fc0, Fc1, 1/Tobs))
+                print(('F0 = {0}, F1 = {1}, delta f = {2}'.format(Fc0, Fc1, 1/Tobs)))
                 return np.ones(len(p.toas)) * np.nan
 
 

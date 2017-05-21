@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from __future__ import division
+
 
 import numpy as np
 import os, sys, time
-import PALInferencePTMCMC as ptmcmc
-import bayesutils as bu
+from . import PALInferencePTMCMC as ptmcmc
+from . import bayesutils as bu
 import scipy.stats as ss
 
 try:
@@ -371,7 +371,7 @@ class RJMCMCSampler(object):
 
         # check for 0 weight
         if weight == 0:
-            print 'ERROR: Can not have 0 weight in proposal cycle!'
+            print('ERROR: Can not have 0 weight in proposal cycle!')
             sys.exit()
 
         # add proposal to cycle

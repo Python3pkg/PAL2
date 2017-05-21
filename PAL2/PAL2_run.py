@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import division
+
 import numpy as np
 import scipy.special as ss
 import glob
@@ -346,7 +346,7 @@ if args.pname[0] != 'all':
                                 start_time=args.start_time,
                                 end_time=args.end_time)
 elif args.pname[0] == 'all':
-    print 'Using all pulsars'
+    print('Using all pulsars')
     pulsars = 'all'
     model = PALmodels.PTAmodels(args.h5file, pulsars=pulsars,
                                 start_time=args.start_time,
@@ -470,7 +470,7 @@ if args.jsonfile is None:
 
     # fix spectral index
     if args.fixSi:
-        print 'Fixing GWB spectral index to {0}'.format(args.fixSi)
+        print('Fixing GWB spectral index to {0}'.format(args.fixSi))
         for sig in fullmodel['signals']:
             if sig['corr'] == 'gr' and sig['stype'] in ['powerlaw', 'turnover']:
                 sig['bvary'][1] = False
@@ -480,7 +480,7 @@ if args.jsonfile is None:
                 sig['pstart'][1] = args.fixSi
 
     if args.GWBGaussian is not None:
-        print 'Setting Gaussian GWB amplitude prior m:{0}, s:{1}'.format(args.GWBGaussian[0], args.GWBGaussian[1])
+        print('Setting Gaussian GWB amplitude prior m:{0}, s:{1}'.format(args.GWBGaussian[0], args.GWBGaussian[1]))
         for sig in fullmodel['signals']:
             if sig['corr'] == 'gr' and sig['stype'] in ['powerlaw', 'turnover']:
                 sig['mu'][0] = args.GWBGaussian[0]
@@ -488,7 +488,7 @@ if args.jsonfile is None:
 
     # fix spectral index
     if args.fixKappa:
-        print 'Fixing GWB kappa to {0}'.format(args.fixKappa)
+        print('Fixing GWB kappa to {0}'.format(args.fixKappa))
         for sig in fullmodel['signals']:
             if sig['corr'] == 'gr' and sig['stype'] in ['turnover']:
                 sig['bvary'][3] = False
@@ -496,7 +496,7 @@ if args.jsonfile is None:
 
     # fix spectral indexa of chromatic wavelet
     if args.fixcBeta:
-        print 'Fixing chromatic wavelet index to {0}'.format(args.fixcBeta)
+        print('Fixing chromatic wavelet index to {0}'.format(args.fixcBeta))
         for sig in fullmodel['signals']:
             if sig['stype'] in ['chrowavelet']:
                 sig['bvary'][0] = False
@@ -504,14 +504,14 @@ if args.jsonfile is None:
 
     # fix spectral index for red nosie
     if args.fixRedSi:
-        print 'Fixing red noise spectral index to 4.33'
+        print('Fixing red noise spectral index to 4.33')
         for sig in fullmodel['signals']:
             if sig['corr'] == 'single' and sig['stype'] == 'powerlaw':
                 sig['bvary'][1] = False
                 sig['pstart'][1] = 4.33
 
     if not(args.incRed):
-        print 'Warning: Not varying red noise'
+        print('Warning: Not varying red noise')
         for sig in fullmodel['signals']:
             if sig['corr'] == 'single' and sig['stype'] == 'powerlaw':
                 sig['bvary'][1] = False
@@ -520,28 +520,28 @@ if args.jsonfile is None:
 
 
     if args.fixf != 0.0:
-        print 'Warning: Fixing CW frequency to {0}'.format(args.fixf)
+        print('Warning: Fixing CW frequency to {0}'.format(args.fixf))
         for sig in fullmodel['signals']:
             if sig['stype'] == 'cw':
                 sig['bvary'][4] = False
                 sig['pstart'][4] = np.log10(args.fixf)
 
     if args.cwtheta is not None:
-        print 'Warning: Fixing CW theta to {0}'.format(args.cwtheta)
+        print('Warning: Fixing CW theta to {0}'.format(args.cwtheta))
         for sig in fullmodel['signals']:
             if sig['stype'] == 'cw':
                 sig['bvary'][0] = False
                 sig['pstart'][0] = args.cwtheta
 
     if args.cwphi is not None:
-        print 'Warning: Fixing CW phi to {0}'.format(args.cwphi)
+        print('Warning: Fixing CW phi to {0}'.format(args.cwphi))
         for sig in fullmodel['signals']:
             if sig['stype'] == 'cw':
                 sig['bvary'][1] = False
                 sig['pstart'][1] = args.cwphi
 
     if args.cwdist is not None:
-        print 'Warning: Fixing dist to {0} Mpc'.format(args.cwdist)
+        print('Warning: Fixing dist to {0} Mpc'.format(args.cwdist))
         for sig in fullmodel['signals']:
             if sig['stype'] == 'cw':
                 sig['bvary'][3] = False
@@ -549,21 +549,21 @@ if args.jsonfile is None:
 
     memsave = True
     if args.noVaryEfac:
-        print 'Not Varying EFAC'
+        print('Not Varying EFAC')
         for sig in fullmodel['signals']:
             if sig['corr'] == 'single' and sig['stype'] == 'efac':
                 sig['bvary'][0] = False
                 sig['pstart'][0] = 1
 
     if args.noVaryNoise:
-        print 'Fixing Noise values to defaults'
+        print('Fixing Noise values to defaults')
         nflags = ['efac', 'equad', 'jitter', 'jitter_equad']
         for sig in fullmodel['signals']:
             if sig['stype'] in nflags:
                 sig['bvary'][0] = False
-                print '{0} for {1} set to {2}'.format(sig['stype'],
+                print('{0} for {1} set to {2}'.format(sig['stype'],
                                                      sig['flagvalue'],
-                                                     sig['pstart'])
+                                                     sig['pstart']))
 
     #for sig in fullmodel['signals']:
     #    if sig['stype'] == 'jitter_equad':
@@ -582,7 +582,7 @@ if args.jsonfile is None:
 
     # turn red noise back on
     if args.fixNoise and args.fixWhite:
-        print 'Turning on red noise and only fixing white noise'
+        print('Turning on red noise and only fixing white noise')
         for sig in fullmodel['signals']:
             if sig['corr'] == 'single' and sig['stype'] == 'powerlaw':
                 sig['bvary'][1] = True
@@ -614,7 +614,7 @@ if args.jsonfile is None:
                     verbose=True, write=write)
 
 else:
-    print 'Initializing Model from JSON file {0}\n'.format(args.jsonfile)
+    print('Initializing Model from JSON file {0}\n'.format(args.jsonfile))
     model.initModelFromFile(args.jsonfile, memsave=True, fromFile=args.fromFile,
                     verbose=True, write=write)
 
@@ -628,8 +628,8 @@ for pname in par_names:
     else:
         par_out.append(pname)
 
-print '{0} Free parameters'.format(len(par_out))
-print 'Search Parameters: {0}'.format(par_out)
+print('{0} Free parameters'.format(len(par_out)))
+print('Search Parameters: {0}'.format(par_out))
 
 # output parameter names
 fout = open(args.outDir + '/pars.txt', 'w')
@@ -663,7 +663,7 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
 
     # if zero log-likeihood
     if args.zerologlike:
-        print 'WARNING: Using zero log-like'
+        print('WARNING: Using zero log-like')
         loglike = model.zeroLogLikelihood
 
     # log prior
@@ -676,15 +676,15 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
     loglkwargs = {}
     if args.noCorrelations or not(np.any([
         args.incGWB, args.incGWBAni, args.incGP, args.incGWBSingle])):
-        print 'Running model with no GWB correlations'
+        print('Running model with no GWB correlations')
         loglkwargs['incCorrelations'] = False
     else:
         loglkwargs['incCorrelations'] = True
-        print 'Running model with GWB correlations'
+        print('Running model with GWB correlations')
     if args.incJitterEquad and np.any([args.mark6, args.Tmatrix, args.mark10]):
         loglkwargs['incJitter'] = True
     if args.sparse and args.mark9:
-        print 'Using sparse matrix representation of Sigma'
+        print('Using sparse matrix representation of Sigma')
         loglkwargs['sparse'] = True
 
     # get initial parameters for MCMC
@@ -699,7 +699,7 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
     while not(inRange):
         p0 = model.initParameters(startEfacAtOne=True, fixpstart=fixpstart)
         startSpectrumMin = True
-        print loglike(p0, **loglkwargs), logprior(p0)
+        print(loglike(p0, **loglkwargs), logprior(p0))
         if logprior(p0) != -np.inf and loglike(p0, **loglkwargs) != -np.inf:
             inRange = True
 
@@ -904,8 +904,8 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
 
 
         ##### all parameters #####
-        ind.insert(0, range(len(p0)))
-        print ind
+        ind.insert(0, list(range(len(p0))))
+        print(ind)
 
         # define MCMC sampler
         sampler = PALInferencePTMCMC.PTSampler(len(p0), loglike, logprior, cov, comm=comm, \
@@ -968,7 +968,7 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
             if args.incPdist:
                 sampler.addProposalToCycle(model.pulsarDistanceJump, 10)
                 if args.cwModel not in ['freephase', 'free', 'ecc', 'upperLimit_phase']:
-                    print 'Adding auxiliary pulsar phase jump'
+                    print('Adding auxiliary pulsar phase jump')
                     sampler.addAuxilaryJump(model.pulsarPhaseFix)
                 elif args.cwModel == 'ecc':
                     sampler.addAuxilaryJump(model.pulsarGammaFix)
@@ -979,14 +979,14 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
 
 
         # run MCMC
-        print 'Engage!'
+        print('Engage!')
         sampler.sample(p0, args.niter, covUpdate=1000, AMweight=15, SCAMweight=30, \
                        DEweight=50, neff=args.neff, KDEweight=0, Tmin=args.Tmin,
                        Tmax=args.Tmax, writeHotChains=args.writeHotChains,
                       hotChain=args.hotChain, thin=args.thin, isave=args.isave)
 
     if args.sampler == 'polychord':
-        print 'Using PolyChord Sampler'
+        print('Using PolyChord Sampler')
         import pypolychord
 
         prior_array = np.append(model.pmin, model.pmax)
@@ -1009,7 +1009,7 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
 
 
     if args.sampler == 'multinest':
-        print 'WARNING: Using MultiNest, will use uniform priors on all parameters'
+        print('WARNING: Using MultiNest, will use uniform priors on all parameters')
         import pymultinest
 
         p0 = model.initParameters(startEfacAtOne=True, fixpstart=False)
@@ -1041,7 +1041,7 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
                     npars = sig['npars']
 
                     if npars:
-                        for ct, ii in enumerate(range(parind, parind+npars)):
+                        for ct, ii in enumerate(list(range(parind, parind+npars))):
                             if sig['prior'][ct] == 'gaussian':
                                 m, s = sig['mu'][ct], sig['sigma'][ct]
                                 cube[ii] = m + s*np.sqrt(2) * ss.erfcinv(2*(1-cube[ii]))
@@ -1080,7 +1080,7 @@ if args.sampler == 'mcmc' or args.sampler == 'minimize' or args.sampler=='multin
                     npars = sig['npars']
 
                     if npars:
-                        for ct, ii in enumerate(range(parind, parind+npars)):
+                        for ct, ii in enumerate(list(range(parind, parind+npars))):
                             if sig['prior'][ct] == 'gaussian':
                                 m, s = sig['mu'][ct], sig['sigma'][ct]
                                 cube[ii] = m + s*np.sqrt(2) * ss.erfcinv(2*(1-cube[ii]))

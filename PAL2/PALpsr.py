@@ -12,14 +12,14 @@ This file was originally developed by Rutger van Haasteren and is modified here
 
 """
 
-from __future__ import division
+
 
 import numpy as np
 import scipy.linalg as sl
 import scipy.special as ss
 import h5py as h5
 import matplotlib.pyplot as plt
-import rankreduced as rr
+from . import rankreduced as rr
 import os
 import sys
 import json
@@ -238,14 +238,14 @@ class Pulsar(object):
                 indok[ii] = False
 
         if sum(indok) != len(indok) and not noWarning:
-            print "WARNING: cannot add parameters to the design matrix that are already present"
-            print "         refusing to add:", map(str, addpars[indok == False])
+            print("WARNING: cannot add parameters to the design matrix that are already present")
+            print("         refusing to add:", list(map(str, addpars[indok == False])))
 
         # Only add the parameters with indok == True
         if sum(indok) > 0:
             # We have some parameters to add
             addM = np.zeros((oldMmat.shape[0], np.sum(indok)))
-            adddes = map(str, addpars[indok])
+            adddes = list(map(str, addpars[indok]))
             addparvals = []
             addunitvals = []
 
@@ -294,7 +294,7 @@ class Pulsar(object):
                 newG = U[:, (newM.shape[1]):].copy()
                 newGc = U[:, :(newM.shape[1])].copy()
 
-        return newM, newG, newGc, newptmpars, map(str, newptmdescription)
+        return newM, newG, newGc, newptmpars, list(map(str, newptmdescription))
 
     """
     Constructs a new modified design matrix by deleting some columns from it.
@@ -319,7 +319,7 @@ class Pulsar(object):
         for ii, parlabel in enumerate(delpars):
             if not parlabel in self.ptmdescription:
                 inddel[ii] = False
-                print "WARNING: {0} not in design matrix. Not deleting".format(parlabel)
+                print("WARNING: {0} not in design matrix. Not deleting".format(parlabel))
             else:
                 index = np.flatnonzero(
                     np.array(
@@ -337,7 +337,7 @@ class Pulsar(object):
             newptmdescription = np.array(self.ptmdescription)
             newptmpars = self.ptmpars.copy()
 
-        return newM, newptmpars, map(str, newptmdescription)
+        return newM, newptmpars, list(map(str, newptmdescription))
 
     """
     Construct a modified design matrix, based on some options. Returns a list of
@@ -578,7 +578,7 @@ class Pulsar(object):
             # print "totrms: ", totrms
             threshold = 1.0 - 1e-15
             inds = (cumrms / totrms) >= threshold
-            print 'Threshold:', threshold
+            print('Threshold:', threshold)
             #print 'cumrms/totrms:', cumrms / totrms
             if np.sum(inds) > 0:
                 # We can compress
@@ -587,11 +587,11 @@ class Pulsar(object):
                 # We cannot compress, keep all
                 l = self.Umat.shape[1]
 
-            print "Number of U basis vectors for " + \
+            print("Number of U basis vectors for " + \
                 self.name + ": " + str(self.Umat.shape) + \
-                " --> " + str(l)
-            print "Number of timing parameters {0}".format(
-                self.Umat.shape[1] - l)
+                " --> " + str(l))
+            print("Number of timing parameters {0}".format(
+                self.Umat.shape[1] - l))
 
             # H is the compression matrix
             Bmat = Vmat[:, :l].copy()
@@ -641,7 +641,7 @@ class Pulsar(object):
                 pass
             else:
                 l = self.Gmat.shape[1] - 1
-            print 'Using {0} components for PSR {1}'.format(l, self.name)
+            print('Using {0} components for PSR {1}'.format(l, self.name))
 
             # H is the compression matrix
             Bmat = Vmat[:, :l].copy()
@@ -664,7 +664,7 @@ class Pulsar(object):
             self.Hocmat = Vmat[:, Ho.shape[1]:]
 
         elif compression == 'dmfrequencies' or compression == 'avefrequencies':
-            print "WARNING: compression on DM frequencies not normalised correctly!"
+            print("WARNING: compression on DM frequencies not normalised correctly!")
 
             Ftot = np.zeros((len(self.toas), 0))
 
@@ -830,9 +830,9 @@ class Pulsar(object):
                         self.name,
                         'PAL_modelFrequencies'))
                 if not np.all(modelFrequencies == file_modelFreqs):
-                    print "WARNING: model frequencies already present in {0}",
+                    print("WARNING: model frequencies already present in {0}", end=' ')
                     "differ from the current".format(h5df.filename)
-                    print "         model. Overwriting..."
+                    print("         model. Overwriting...")
             except IOError:
                 pass
 
@@ -1027,20 +1027,20 @@ class Pulsar(object):
         if tmpars is not None:
             # list of parameters to delete from design matrix
             if likfunc == 'mark4' or likfunc == 'mark5' or likfunc == 'mark7':
-                print 'Including all timing model parameters Numerically'
+                print('Including all timing model parameters Numerically')
                 Mmat = self.Mmat
             else:
                 tmparkeep = self.getNewTimingModelParameterList(
                     keep=True,
                     tmpars=tmpars)
-                print 'Numerically including', tmparkeep
+                print('Numerically including', tmparkeep)
                 Mmat, newptmpars, self.newdes = self.delFromDesignMatrix(
                     tmparkeep)
 
             tmpardel = self.getNewTimingModelParameterList(
                 keep=False,
                 tmpars=tmpars)
-            print 'Analytically marginalizing over', tmpardel
+            print('Analytically marginalizing over', tmpardel)
             self.Mmat, newptmpars, newptmdescription = self.delFromDesignMatrix(
                 tmpardel)
 
@@ -1076,7 +1076,7 @@ class Pulsar(object):
             #Mm, s, Vh = sl.svd(Mmat, full_matrices=False)
 
             if use_svd_design:
-                print 'Using SVD design matrix normalization'
+                print('Using SVD design matrix normalization')
                 Mm, _, _ = np.linalg.svd(Mmat, full_matrices=False)
 
         self.Mmat_reduced = Mm
@@ -1152,7 +1152,7 @@ class Pulsar(object):
                     self.toas, dt=86400 * 14)
                 self.DMXDesignMat = (PAL_DMk / (self.freqs ** 2) * tmpMat.T).T
                 self.nDMX = self.DMXDesignMat.shape[1]
-                print self.nDMX
+                print(self.nDMX)
                 self.Tmat = np.concatenate(
                     (self.Tmat, self.DMXDesignMat), axis=1)
 
@@ -1358,7 +1358,7 @@ class Pulsar(object):
         try:
             file_compression = str(h5df.getData(self.name, 'PAL_compression'))
         except IOError:
-            print 'Assuming compression is None!'
+            print('Assuming compression is None!')
             file_compression = 'None'
         # if file_compression != compression:
         #    raise ValueError('ERROR: compression argument does not match one in hdf5 file! Must re-compute everything :(')
@@ -1545,8 +1545,8 @@ class Pulsar(object):
             self.Uinds = PALutils.quant2ind(self.Umat)
             self.aveflags = self.flags[self.Uinds[:, 0]]
 
-            print PALutils.checkTOAsort(self.toas, self.flags, which='jitterext', dt=1.0)
-            print PALutils.checkquant(self.Umat, self.flags, uflagvals=aveflags)
+            print(PALutils.checkTOAsort(self.toas, self.flags, which='jitterext', dt=1.0))
+            print(PALutils.checkquant(self.Umat, self.flags, uflagvals=aveflags))
 
         # basic quantities
         self.Gr = h5df.getData(self.name, 'Gr')

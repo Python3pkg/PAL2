@@ -11,7 +11,7 @@ This file was originally developed by Rutger van Haasteren and is recycled here.
 
 """
 
-from __future__ import division
+
 
 import numpy as np
 import h5py as h5
@@ -91,7 +91,7 @@ class DataFile(object):
     """
     def addData(self, psrname, field, data, overwrite=True):
         if self.filename is None:
-            raise RuntimeError, "HDF5 filename not provided"
+            raise RuntimeError("HDF5 filename not provided")
 
         # 'a' means: read/write if exists, create otherwise
         self.h5file = h5.File(self.filename, 'a')
@@ -122,7 +122,7 @@ class DataFile(object):
             return None
 
         if self.filename is None:
-            raise RuntimeError, "HDF5 filename not provided"
+            raise RuntimeError("HDF5 filename not provided")
 
         # 'r' means: read file, must exist
         self.h5file = h5.File(self.filename, 'r')
@@ -135,7 +135,7 @@ class DataFile(object):
             else:
                 self.h5file.close()
                 if required:
-                    raise IOError, "Field {0} not present for pulsar {1}/{2}".format(field, psrname, subgroup)
+                    raise IOError("Field {0} not present for pulsar {1}/{2}".format(field, psrname, subgroup))
 
         if field in datGroup:
             if field == 'parfile' or field == 'timfile':
@@ -146,7 +146,7 @@ class DataFile(object):
         else:
             self.h5file.close()
             if required:
-                raise IOError, "Field {0} not present for pulsar {1}".format(field, psrname)
+                raise IOError("Field {0} not present for pulsar {1}".format(field, psrname))
             else:
                 data = None
 
@@ -161,7 +161,7 @@ class DataFile(object):
     """
     def getShape(self, psrname, field, subgroup=None):
         if self.filename is None:
-            raise RuntimeError, "HDF5 filename not provided"
+            raise RuntimeError("HDF5 filename not provided")
 
         # 'r' means: read file, must exist
         self.h5file = h5.File(self.filename, 'r')
@@ -173,14 +173,14 @@ class DataFile(object):
                 datGroup = psrGroup[subgroup]
             else:
                 self.h5file.close()
-                raise IOError, "Field {0} not present for pulsar {1}/{2}".format(field, psrname, subgroup)
+                raise IOError("Field {0} not present for pulsar {1}/{2}".format(field, psrname, subgroup))
 
         if field in datGroup:
             shape = datGroup[field].shape
             self.h5file.close()
         else:
             self.h5file.close()
-            raise IOError, "Field {0} not present for pulsar {1}".format(field, psrname)
+            raise IOError("Field {0} not present for pulsar {1}".format(field, psrname))
 
         return shape
 
@@ -218,10 +218,10 @@ class DataFile(object):
                        mode='overwrite', maxobs=30000, ephem=None):
         # Check whether the two files exist
         if not os.path.isfile(parfile) or not os.path.isfile(timfile):
-            raise IOError, "Cannot find parfile (%s) or timfile (%s)!" % (parfile, timfile)
+            raise IOError("Cannot find parfile (%s) or timfile (%s)!" % (parfile, timfile))
 
         if self.filename is None:
-            raise RuntimeError, "HDF5 filename not provided"
+            raise RuntimeError("HDF5 filename not provided")
 
         # Parse the default write behaviour
         deletepsr = False
@@ -252,7 +252,7 @@ class DataFile(object):
         except TypeError:
             t2pulsar = t2.tempopulsar(relparfile, reltimfile, ephem=ephem)
         except:
-            print("Dir: ", dirname, savedir, parfile, timfile)
+            print(("Dir: ", dirname, savedir, parfile, timfile))
             os.chdir(savedir)
             raise
 
@@ -309,8 +309,8 @@ class DataFile(object):
                 pdist, pdistErr = np.double(vals[1]), np.double(vals[2])
                 found = True
         if not(found):
-            print ('WARNING: Could not find pulsar distance for PSR {0}. '
-                   'Setting value to 1 with 20% uncertainty'.format(t2pulsar.name))
+            print(('WARNING: Could not find pulsar distance for PSR {0}. '
+                   'Setting value to 1 with 20% uncertainty'.format(t2pulsar.name)))
             pdist, pdistErr = 1.0, 0.2
 
         # close file
@@ -354,11 +354,11 @@ class DataFile(object):
         flagGroup = psrGroup.require_group('Flags')
 
         # Obtain the unique flags in this dataset, and write to file
-        uflags = np.unique(map(str, t2pulsar.flags()))
+        uflags = np.unique(list(map(str, t2pulsar.flags())))
         
         for flagid in uflags:
             self.writeData(flagGroup, flagid,
-                           map(str, t2pulsar.flagvals(flagid)),
+                           list(map(str, t2pulsar.flagvals(flagid))),
                            overwrite=overwrite)
 
         # check for pp dm flags
@@ -372,10 +372,10 @@ class DataFile(object):
             D = K.copy()
             D[np.nonzero(D)] = 1
             dmt = t2pulsar['DM'].val + np.dot(D, vals[idx])
-            ppdm = np.array(map(float, flagGroup['pp_dm']))
+            ppdm = np.array(list(map(float, flagGroup['pp_dm'])))
             ppdm -= dmt
             #ppdm -= ppdm.mean()
-            ppdme = map(float, flagGroup['pp_dme'])
+            ppdme = list(map(float, flagGroup['pp_dme']))
         else:
             ppdm = np.zeros(len(t2pulsar.toas()))
             ppdme = np.zeros(len(t2pulsar.toas()))
@@ -390,12 +390,12 @@ class DataFile(object):
             # efacequad flag with the pulsar name as it's elements.
             efacequad = []
             nobs = len(t2pulsar.toas())
-            pulsarname = map(str, [t2pulsar.name] * nobs)
+            pulsarname = list(map(str, [t2pulsar.name] * nobs))
 
             if "sys" in flagGroup:
-                efacequad = map('-'.join, zip(pulsarname, flagGroup['sys']))
+                efacequad = list(map('-'.join, list(zip(pulsarname, flagGroup['sys']))))
             elif "be" in flagGroup:
-                efacequad = map('-'.join, zip(pulsarname, flagGroup['be']))
+                efacequad = list(map('-'.join, list(zip(pulsarname, flagGroup['be']))))
             else:
                 efacequad = pulsarname
 
@@ -466,7 +466,7 @@ class DataFile(object):
 
         if not "pulsarname" in flagGroup:
             nobs = len(t2pulsar.toas())
-            pulsarname = map(str, [t2pulsar.name] * nobs)
+            pulsarname = list(map(str, [t2pulsar.name] * nobs))
             self.writeData(flagGroup, "pulsarname", pulsarname, overwrite=overwrite)
 
         # Close the HDF5 file
@@ -550,22 +550,22 @@ class DataFile(object):
         psr.timfile_content = str(self.getData(psrname, 'timfile', required=False))
 
         # Read the timing model parameter descriptions
-        psr.ptmdescription = map(str, self.getData(psrname, 'tmp_name'))
+        psr.ptmdescription = list(map(str, self.getData(psrname, 'tmp_name')))
         psr.ptmpars = np.array(self.getData(psrname, 'tmp_valpost'))
         psr.ptmparerrs = np.array(self.getData(psrname, 'tmp_errpost'))
-        psr.flags = np.array(map(str, self.getData(psrname, 'efacequad_freq', 'Flags')))
-        psr.tobsflags = np.array(map(float, self.getData(psrname, 'tobs_all', 'Flags')))
+        psr.flags = np.array(list(map(str, self.getData(psrname, 'efacequad_freq', 'Flags'))))
+        psr.tobsflags = np.array(list(map(float, self.getData(psrname, 'tobs_all', 'Flags'))))
         try:
-            psr.bwflags = np.array(map(float, self.getData(psrname, 'bwflags', 'Flags')))
+            psr.bwflags = np.array(list(map(float, self.getData(psrname, 'bwflags', 'Flags'))))
         except IOError:
             psr.bwflags = np.ones(len(psr.flags)) * 4.0
 
-        psr.setptmdescription = map(str, self.getData(psrname, 'set_name'))
+        psr.setptmdescription = list(map(str, self.getData(psrname, 'set_name')))
         psr.setptmpars = np.array(self.getData(psrname, 'set_valpost'))
 
         # add this for frequency dependent terms
         #TODO: should eventually change psr.flags to a dictionary
-        psr.fflags = np.array(map(str, self.getData(psrname, 'efacequad_freq', 'Flags')))
+        psr.fflags = np.array(list(map(str, self.getData(psrname, 'efacequad_freq', 'Flags'))))
 
         # Read the position of the pulsar
         rajind = np.flatnonzero(np.array(psr.setptmdescription) == 'RAJ')
@@ -594,8 +594,8 @@ class DataFile(object):
                 psr.raj = np.double([eq.ra])
                 psr.decj = np.double([eq.dec])
             except TypeError:
-                print 'WARNING: Cannot find sky location coordinates.' \
-                        'Setting to 0.'
+                print('WARNING: Cannot find sky location coordinates.' \
+                        'Setting to 0.')
                 psr.raj = np.array([0.0])
                 psr.decj = np.array([0.0])
 
@@ -635,8 +635,8 @@ class DataFile(object):
                 start_time = psr.toas.min()/86400
             if end_time is None:
                 end_time = psr.toas.max()/86400
-            print 'Filtering TOAs between {0} and {1} for PSR {2}'.format(
-                start_time, end_time, psr.name)
+            print('Filtering TOAs between {0} and {1} for PSR {2}'.format(
+                start_time, end_time, psr.name))
             ind = np.logical_and(psr.toas/86400>=start_time, psr.toas/86400<=end_time)
             psr.toas = psr.toas[ind]
             psr.toaerrs = psr.toaerrs[ind]
@@ -649,11 +649,11 @@ class DataFile(object):
             psr.bwflags = psr.bwflags[ind]
 
             # design matrix
-            print 'Design Matrix Shape pre-filter:', psr.Mmat.shape
+            print('Design Matrix Shape pre-filter:', psr.Mmat.shape)
             psr.Mmat = psr.Mmat[ind,:]
             dind = psr.Mmat.sum(axis=0) == 0
             psr.Mmat = psr.Mmat[:,~dind]
-            print 'Design Matrix Shape post-filter:', psr.Mmat.shape
+            print('Design Matrix Shape post-filter:', psr.Mmat.shape)
 
             # fitted parameters
             psr.ptmdescription = list(np.array(psr.ptmdescription)[~dind])

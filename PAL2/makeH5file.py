@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import division
+
 from PAL2 import PALdatafile
 import os, glob
 
@@ -42,7 +42,7 @@ timFiles.sort()
 
 df = PALdatafile.DataFile(args.h5file)
 for t,p in zip(timFiles, parFiles):
-    print '\n', t, p, '\n'
+    print('\n', t, p, '\n')
     df.addTempoPulsar(p, t, iterations=args.iter, maxobs=args.maxobs, 
                       ephem=args.ephem)
 

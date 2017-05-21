@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from __future__ import division
+
 
 import numpy as np
 import h5py as h5
@@ -14,7 +14,7 @@ import scipy.special as ss
 from scipy.interpolate import interp1d
 import scipy.sparse as sps
 from numpy.polynomial.hermite import hermval
-import AnisCoefficientsV2 as ani
+from . import AnisCoefficientsV2 as ani
 
 from PAL2 import PALutils
 from PAL2 import PALdatafile
@@ -32,7 +32,7 @@ try:
     from sksparse.cholmod import cholesky
     SK_SPARSE = True
 except ImportError:
-    print 'WARNING: scikit-sparse note installed, will try scikits.sparse...'
+    print('WARNING: scikit-sparse note installed, will try scikits.sparse...')
     SK_SPARSE = False
 
 if not SK_SPARSE:
@@ -40,7 +40,7 @@ if not SK_SPARSE:
         from scikits.sparse.cholmod import cholesky
         SK_SPARSE = True
     except ImportError:
-        print 'WARNING: scikits.sparse note installed, will not use sparse matrices'
+        print('WARNING: scikits.sparse note installed, will not use sparse matrices')
         SK_SPARSE = False
 
 import matplotlib.pyplot as plt
@@ -495,7 +495,7 @@ class PTAmodels(object):
                 for lb, hb in zip(lbands, lhbands):
                     lidx = np.logical_and(p.freqs <= hb, p.freqs > lb)
                     if np.any(lidx):
-                        print lb, hb, np.sum(lidx)
+                        print(lb, hb, np.sum(lidx))
                         toamin = p.toas[lidx].min() / 86400
                         toamax = p.toas[lidx].max() / 86400
                         bvary = [True, True, True]
@@ -718,7 +718,7 @@ class PTAmodels(object):
                 lhbands = [1000, 2000, 5000]
                 for lb, hb in zip(lbands, lhbands):
                     if np.any(np.logical_and(p.freqs <= hb, p.freqs > lb)):
-                        print lb, hb, np.sum(np.logical_and(p.freqs <= hb, p.freqs > lb))
+                        print(lb, hb, np.sum(np.logical_and(p.freqs <= hb, p.freqs > lb)))
                         bvary = [True, True, False]
                         pmin = [-20.0, 0.02, 1.0e-11]
                         pmax = [-11.0, 6.98, 3.0e-9]
@@ -728,7 +728,7 @@ class PTAmodels(object):
                         parids = ['RN-Amplitude-{0}-{1}'.format(lb, hb),
                                   'RN-Si-{0}-{1}'.format(lb, hb),
                                   'RN-fL-{0}-{1}'.format(lb, hb)]
-                        print parids
+                        print(parids)
 
                         newsignal = OrderedDict({
                             "stype": 'powerlaw_band',
@@ -752,7 +752,7 @@ class PTAmodels(object):
                 lhbands = [1000, 2000, 5000]
                 for lb, hb in zip(lbands, lhbands):
                     if np.any(np.logical_and(p.freqs <= hb, p.freqs > lb)):
-                        print lb, hb, np.sum(np.logical_and(p.freqs <= hb, p.freqs > lb))
+                        print(lb, hb, np.sum(np.logical_and(p.freqs <= hb, p.freqs > lb)))
                         bvary = [True, True, False]
                         pmin = [-14.0, 0.02, 1.0e-11]
                         pmax = [-6.5, 6.98, 3.0e-9]
@@ -762,7 +762,7 @@ class PTAmodels(object):
                         parids = ['DM-Amplitude-{0}-{1}'.format(lb, hb),
                                   'DM-Si-{0}-{1}'.format(lb, hb),
                                   'DM-fL-{0}-{1}'.format(lb, hb)]
-                        print parids
+                        print(parids)
 
                         newsignal = OrderedDict({
                             "stype": 'dmpowerlaw_band',
@@ -949,7 +949,7 @@ class PTAmodels(object):
                         # turn on fits for parameters
                         if pars is not None:
                             for key in pars:
-                                print 'Turning on fit for {0}\n'.format(key)
+                                print('Turning on fit for {0}\n'.format(key))
                                 p.t2psr[key].fit = True
                                 if key == 'SINI' and p.t2psr['SINI'].val == 0:
                                     p.t2psr[key].val = 0.99
@@ -963,10 +963,10 @@ class PTAmodels(object):
                                 dmxs = np.array([par for par in p.ptmdescription
                                                  if 'DMX' in par])
                                 for dmx in dmxs:
-                                    print 'Turning on fit for {0}'.format(dmx)
+                                    print('Turning on fit for {0}'.format(dmx))
                                     p.t2psr[dmx].fit = True
                             elif key == 'ORTHO':
-                                print 'Using orthometric parameterization!'
+                                print('Using orthometric parameterization!')
                                 if p.t2psr.binarymodel == 'DD':
                                     p.t2psr.binarymodel = 'DDH'
                                 if p.t2psr.binarymodel == 'ELL1':
@@ -998,7 +998,7 @@ class PTAmodels(object):
                                 p.t2psr.binarymodel = 'T2'
 
                             else:
-                                print 'Turning on fit for {0}'.format(key)
+                                print('Turning on fit for {0}'.format(key))
                                 p.t2psr[key].fit = True
                                 if key == 'SINI' and p.t2psr['SINI'].val == 0:
                                     p.t2psr[key].val = 0.99
@@ -1012,20 +1012,20 @@ class PTAmodels(object):
                                 dmxs = np.array([par for par in p.ptmdescription
                                                  if 'DMX' in par])
                                 for dmx in dmxs:
-                                    print 'Turning off fit for {0}'.format(dmx)
+                                    print('Turning off fit for {0}'.format(dmx))
                                     p.t2psr[dmx].fit = False
                                     p.t2psr[dmx].val = 0.0
                             elif key == 'DM':
-                                print 'Turning off fit for {0}'.format(key)
+                                print('Turning off fit for {0}'.format(key))
                                 p.t2psr[key].fit = False
-                                print 'Fixing value at  {0}'.format(p.t2psr[key].val)
+                                print('Fixing value at  {0}'.format(p.t2psr[key].val))
                             else:
-                                print 'Turning off fit for {0}'.format(key)
+                                print('Turning off fit for {0}'.format(key))
                                 p.t2psr[key].fit = False
                                 p.t2psr[key].val = 0.0
 
                     # Get updated model
-                    p.ptmdescription = ['Offset'] + map(str, p.t2psr.pars())
+                    p.ptmdescription = ['Offset'] + list(map(str, p.t2psr.pars()))
                     p.ptmpars = np.array([0] + list(p.t2psr.vals()))
                     p.ptmparerrs = np.array([0] + list(p.t2psr.errs()))
                     p.Mmat = p.t2psr.designmatrix(fixunits=True)
@@ -2352,7 +2352,7 @@ class PTAmodels(object):
                 pwidth += [0.1] * (ncoeff)
                 prior = [GWspectrumPrior] * nfreqs
                 prior += ['uniform'] * (ncoeff)
-                print nfreqs
+                print(nfreqs)
                 parids = ['rho_' + str(f) for f in range(nfreqs)]
                 parids += ['c_' + str(l) + str(m) for l in range(lmax + 1)
                            for m in range(-l, l + 1) if l != 0]
@@ -2374,7 +2374,7 @@ class PTAmodels(object):
                 parids = ['aGWB-Amplitude', 'aGWB-SpectralIndex']
                 parids += ['c_' + str(l) + str(m) for l in range(lmax + 1)
                            for m in range(-l, l + 1) if l != 0]
-                print len(parids), np.sum(bvary)
+                print(len(parids), np.sum(bvary))
 
             newsignal = OrderedDict({
                 "stype": gwbModel,
@@ -2432,7 +2432,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in signal. \
-                             Keys: {0}. Required: {1}".format(signal.keys(), keys))
+                             Keys: {0}. Required: {1}".format(list(signal.keys()), keys))
 
         # Determine the time baseline of the array of pulsars
         #if not 'Tmax' in signal and Tmax is None:
@@ -2619,7 +2619,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in efac signal. \
-                             Keys: {0}. Required: {1}".format(signal.keys(), keys))
+                             Keys: {0}. Required: {1}".format(list(signal.keys()), keys))
 
         signal['Nvec'] = self.psr[signal['pulsarind']].toaerrs ** 2
 
@@ -2653,7 +2653,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in jitter signal. \
-                             Keys: {0}. Required: {1}".format(signal.keys(), keys))
+                             Keys: {0}. Required: {1}".format(list(signal.keys()), keys))
 
         # eq 5 from cordes and shannon measurement model paper
         Wims = 0.1 * self.psr[signal['pulsarind']].period * 1e3
@@ -2706,7 +2706,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in jitter equad signal. \
-                             Keys: {0}. Required: {1}".format(signal.keys(), keys))
+                             Keys: {0}. Required: {1}".format(list(signal.keys()), keys))
 
         self.ptasignals.append(signal.copy())
 
@@ -2732,7 +2732,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in jitter equad signal. \
-                             Keys: {0}. Required: {1}".format(signal.keys(), keys))
+                             Keys: {0}. Required: {1}".format(list(signal.keys()), keys))
 
         # This is the 'jitter' that we have used before
         signal['Jvec'] = np.ones(len(self.psr[signal['pulsarind']].avetoas))
@@ -2767,7 +2767,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in equad signal. Keys: {0}. \
-                             Required: {1}".format(signal.keys(), keys))
+                             Required: {1}".format(list(signal.keys()), keys))
 
         signal['Nvec'] = np.ones(len(self.psr[signal['pulsarind']].toaerrs))
 
@@ -2800,7 +2800,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in frequency line signal. \
-                             Keys: {0}. Required: {1}".format(signal.keys(), keys))
+                             Keys: {0}. Required: {1}".format(list(signal.keys()), keys))
 
         self.ptasignals.append(signal.copy())
 
@@ -2825,7 +2825,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in non gaussian coeffieicnt signal. \
-                             Keys: {0}. Required: {1}".format(signal.keys(), keys))
+                             Keys: {0}. Required: {1}".format(list(signal.keys()), keys))
 
         self.ptasignals.append(signal.copy())
 
@@ -2853,7 +2853,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex', 'Tmax']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in signal. Keys: {0}. \
-                             Required: {1}".format(signal.keys(), keys))
+                             Required: {1}".format(list(signal.keys()), keys))
 
         if signal['corr'] == 'gr':
             # Correlated with the Hellings \& Downs matrix
@@ -2893,7 +2893,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex', 'Tmax']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in DMV signal. Keys: {0}. \
-                             Required: {1}".format(signal.keys(), keys))
+                             Required: {1}".format(list(signal.keys()), keys))
 
         self.ptasignals.append(signal.copy())
 
@@ -2919,7 +2919,7 @@ class PTAmodels(object):
                 'pmin', 'pmax', 'pwidth', 'pstart', 'parindex']
         if not all(k in signal for k in keys):
             raise ValueError("ERROR: Not all signal keys are present in TimingModel signal. Keys: {0}. Required: {1}".format(
-                signal.keys(), keys))
+                list(signal.keys()), keys))
 
         # Assert that this signal applies to a pulsar
         if signal['pulsarind'] < 0 or signal['pulsarind'] >= len(self.psr):
@@ -3123,15 +3123,15 @@ class PTAmodels(object):
 
         # print 'WARNING: Using seperate Tmax for each pulsar'
         if dTmax is None:
-            print 'WARNING: Using seperate Tmax for each pulsar'
+            print('WARNING: Using seperate Tmax for each pulsar')
             for p in self.psr:
                 p.Tmax = p.toas.max() - p.toas.min()
         elif dTmax == 0:
-            print 'Using longest timespan of {0} yr for Tmax'.format(Tmax/3.16e7)
+            print('Using longest timespan of {0} yr for Tmax'.format(Tmax/3.16e7))
             for p in self.psr:
                 p.Tmax = Tmax
         else:
-            print 'Using {0} yr for Tmax'.format(dTmax / 3.16e7)
+            print('Using {0} yr for Tmax'.format(dTmax / 3.16e7))
             for p in self.psr:
                 p.Tmax = dTmax
 
@@ -3201,7 +3201,7 @@ class PTAmodels(object):
                         'Requested to re-create the Auxiliaries')
                 # Read Auxiliaries
                 if verbose:
-                    print "Reading Auxiliaries for {0}".format(p.name)
+                    print("Reading Auxiliaries for {0}".format(p.name))
                 p.readPulsarAuxiliaries(self.h5df, p.Tmax, numNoiseFreqs[pindex],
                                         numDMFreqs[pindex], ~separateEfacs[
                                             pindex],
@@ -3216,8 +3216,8 @@ class PTAmodels(object):
                 # For every pulsar, construct the auxiliary quantities like the Fourier
                 # design matrix etc
                 if verbose:
-                    print str(err)
-                    print "Creating Auxiliaries for {0}".format(p.name)
+                    print(str(err))
+                    print("Creating Auxiliaries for {0}".format(p.name))
                 p.createPulsarAuxiliaries(self.h5df, p.Tmax, numNoiseFreqs[pindex],
                                           numDMFreqs[pindex], ~separateEfacs[
                                               pindex],
@@ -5569,7 +5569,7 @@ class PTAmodels(object):
                             snr = np.sqrt(np.dot(wv/psr.Nvec, wv))
                             #print snr/snr2
                         except ValueError:
-                            print 'Error'
+                            print('Error')
                             snr = np.sqrt(np.dot(wv/psr.Nvec, wv))
 
                     else:
@@ -6000,7 +6000,7 @@ class PTAmodels(object):
                                        selection=None)
 
         if not check:
-            print 'Phi inversion failed'
+            print('Phi inversion failed')
             return -np.inf
 
         # set deterministic sources
@@ -6057,7 +6057,7 @@ class PTAmodels(object):
                 SigmaInvd = sl.cho_solve(cf, p.d)
                 SigmaInvTNF = sl.cho_solve(cf, p.FNT.T)
             except np.linalg.LinAlgError:
-                print "ERROR: Sigma singular according to SVD"
+                print("ERROR: Sigma singular according to SVD")
                 return -np.inf
 
             # compute F^T N^{-1} T \Sigma^{-1} d
@@ -6159,7 +6159,7 @@ class PTAmodels(object):
                     NiGcNiGcr = np.dot(NiGc, GcNiGcr)
 
                 except np.linalg.LinAlgError:
-                    print "MAJOR ERROR"
+                    print("MAJOR ERROR")
 
                 # F^TG(G^TNG)^{-1}G^T\delta t
                 X.append(np.dot(p.Ftot.T, Nir - NiGcNiGcr))
@@ -6282,7 +6282,7 @@ class PTAmodels(object):
                     NiGcNiGcr = np.dot(NiGc, GcNiGcr)
 
                 except np.linalg.LinAlgError:
-                    print "MAJOR ERROR"
+                    print("MAJOR ERROR")
 
                 # F^TG(G^TNG)^{-1}G^T\delta t
                 X.append(np.dot(p.Umat.T, Nir - NiGcNiGcr))
@@ -6363,7 +6363,7 @@ class PTAmodels(object):
                     self.psr[ii].theta, self.psr[ii].phi, self.psr[jj].theta, self.psr[jj].phi))
 
                 if np.isnan(sig[-1]):
-                    print self.psr[ii].name, self.psr[jj].name, rho[-1], sig[-1]
+                    print(self.psr[ii].name, self.psr[jj].name, rho[-1], sig[-1])
 
         # return Opt, sigma, snr
 
@@ -6470,7 +6470,7 @@ class PTAmodels(object):
                     NiGcNiGcr = np.dot(NiGc, GcNiGcr)
 
                 except np.linalg.LinAlgError:
-                    print "MAJOR ERROR"
+                    print("MAJOR ERROR")
 
                 # F^TG(G^TNG)^{-1}G^T\delta t
                 if ct == 0:
@@ -6594,7 +6594,7 @@ class PTAmodels(object):
                     NiGcNiGcr = np.dot(NiGc, GcNiGcr)
 
                 except np.linalg.LinAlgError:
-                    print "MAJOR ERROR"
+                    print("MAJOR ERROR")
 
                 # F^TG(G^TNG)^{-1}G^T\delta t
                 if ct == 0:
@@ -6624,8 +6624,8 @@ class PTAmodels(object):
                 self.logdetPhi = 2 * np.sum(np.log(np.diag(cf[0])))
                 self.Phiinv = sl.cho_solve(cf, np.identity(Phi.shape[0]))
             except np.linalg.LinAlgError:
-                print 'ERROR: Cholesky Failed when inverting Phi0'
-                print parameters
+                print('ERROR: Cholesky Failed when inverting Phi0')
+                print(parameters)
                 #U, s, Vh = sl.svd(Phi)
                 # if not np.all(s > 0):
                 # print "ERROR: Sigma singular according to SVD when inverting
@@ -6650,8 +6650,8 @@ class PTAmodels(object):
             logdet_Sigma = 2 * np.sum(np.log(np.diag(cf[0])))
             expval2 = sl.cho_solve(cf, d)
         except np.linalg.LinAlgError:
-            print 'Cholesky failed when inverting Sigma'
-            print parameters
+            print('Cholesky failed when inverting Sigma')
+            print(parameters)
             #U, s, Vh = sl.svd(Sigma)
             # if not np.all(s > 0):
             # print "ERROR: Sigma singular according to SVD when inverting
@@ -6739,7 +6739,7 @@ class PTAmodels(object):
                     NiGcNiGcr = np.dot(NiGc, GcNiGcr)
 
                 except np.linalg.LinAlgError:
-                    print "MAJOR ERROR"
+                    print("MAJOR ERROR")
 
                 # F^TG(G^TNG)^{-1}G^T\delta t
                 if ct == 0:
@@ -6803,7 +6803,7 @@ class PTAmodels(object):
                 logdet_Phi0 = 2 * np.sum(np.log(np.diag(cf[0])))
                 PhiinvFJ = sl.cho_solve(cf, sl.block_diag(*FJ))
             except np.linalg.LinAlgError:
-                print 'Cholesky Failed when inverting Phi0'
+                print('Cholesky Failed when inverting Phi0')
                 return -np.inf
                 #U, s, Vh = sl.svd(Phi0)
                 # if not np.all(s > 0):
@@ -6921,7 +6921,7 @@ class PTAmodels(object):
                         NiGcNiGcr = np.dot(NiGc, GcNiGcr)
 
                     except np.linalg.LinAlgError:
-                        print "MAJOR ERROR"
+                        print("MAJOR ERROR")
 
                     # F^TG(G^TNG)^{-1}G^T\delta t
                     if ct == 0:
@@ -6991,7 +6991,7 @@ class PTAmodels(object):
                 logdet_Phi0 = 2 * np.sum(np.log(np.diag(cf[0])))
                 PhiinvFJ = sl.cho_solve(cf, sl.block_diag(*FJ))
             except np.linalg.LinAlgError:
-                print 'Cholesky Failed when inverting Phi0'
+                print('Cholesky Failed when inverting Phi0')
                 return -np.inf
                 #U, s, Vh = sl.svd(Phi0)
                 # if not np.all(s > 0):
@@ -7422,7 +7422,7 @@ class PTAmodels(object):
         """
 
         loglike = 0
-        print self.mark8Gradient(parameters)
+        print(self.mark8Gradient(parameters))
 
         # set pulsar white noise parameters
         self.setPsrNoise(parameters, incJitter=False)
@@ -7477,7 +7477,7 @@ class PTAmodels(object):
                                            selection=selection)
 
             if not check:
-                print 'Phi inversion failed'
+                print('Phi inversion failed')
                 return -np.inf
 
         # set deterministic sources
@@ -7548,7 +7548,7 @@ class PTAmodels(object):
                     if varyNoise:
                         self.logdet_Sigma += np.sum(2 * np.log(np.diag(cf[0])))
                 except np.linalg.LinAlgError:
-                    print "ERROR: Sigma singular according to SVD"
+                    print("ERROR: Sigma singular according to SVD")
                     return -np.inf
 
                 loglike += 0.5 * (np.dot(dd, expval2))
@@ -8161,7 +8161,7 @@ class PTAmodels(object):
                 ml_errs.append(((sigma_inv / norm).T * 1 / norm).T)
                 expval2 = sl.cho_solve(cf, MXdt)
             except np.linalg.LinAlgError:
-                print 'Cholesky decomposition failed'
+                print('Cholesky decomposition failed')
                 raise("ValueError")
                 #u, s, v = np.linalg.svd(term1-term2+Phiinvb)
                 #sinv = 1/s
@@ -8601,7 +8601,7 @@ class PTAmodels(object):
                     #qxy += np.log(10 ** parameters[parind] / 10 ** q[parind])
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
             # jump in spectral index if varying
@@ -8723,7 +8723,7 @@ class PTAmodels(object):
                     qxy += np.log(10 ** parameters[parind] / 10 ** q[parind])
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
             # jump in spectral index if varying
@@ -8781,7 +8781,7 @@ class PTAmodels(object):
                     qxy += np.log(10 ** parameters[parind] / 10 ** q[parind])
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
             # jump in spectral index if varying
@@ -8839,7 +8839,7 @@ class PTAmodels(object):
                     qxy += np.log(10 ** parameters[parind] / 10 ** q[parind])
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
             # jump in spectral index if varying
@@ -8908,7 +8908,7 @@ class PTAmodels(object):
                                   / 10 ** (q[parind + jj] / 2))
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind + jj] = parameters[parind + jj]
 
         return q, qxy
@@ -8970,7 +8970,7 @@ class PTAmodels(object):
                                   / 10 ** (q[parind + jj] / 2))
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind + jj] = parameters[parind + jj]
 
         return q, qxy
@@ -9025,7 +9025,7 @@ class PTAmodels(object):
                                   (parameters[parind + jj] / 2) / 10 ** (q[parind + jj] / 2))
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind + jj] = parameters[parind + jj]
 
         return q, qxy
@@ -9097,7 +9097,7 @@ class PTAmodels(object):
                         s ** 2 - (m - q[parind]) ** 2 / 2 / s ** 2
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
             # jump in spectral index if varying
@@ -9198,7 +9198,7 @@ class PTAmodels(object):
                     s ** 2 - (m - q[parind]) ** 2 / 2 / s ** 2
 
             else:
-                print 'Prior type not recognized for parameter'
+                print('Prior type not recognized for parameter')
                 q[parind] = parameters[parind]
 
         # jump in spectral index if varying
@@ -9953,7 +9953,7 @@ class PTAmodels(object):
                     qxy += np.log(10 ** parameters[parind] / 10 ** q[parind])
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
         return q, qxy
@@ -10002,7 +10002,7 @@ class PTAmodels(object):
                                       parameters[parind + jj] / 10 ** q[parind + jj])
 
                     else:
-                        print 'Prior type not recognized for parameter'
+                        print('Prior type not recognized for parameter')
                         q[parind + jj] = parameters[parind + jj]
 
         return q, qxy
@@ -10049,7 +10049,7 @@ class PTAmodels(object):
                     qxy += np.log(10 ** parameters[parind] / 10 ** q[parind])
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
         return q, qxy
@@ -10091,7 +10091,7 @@ class PTAmodels(object):
                     qxy += 0
 
                 else:
-                    print 'Prior type not recognized for parameter'
+                    print('Prior type not recognized for parameter')
                     q[parind] = parameters[parind]
 
         return q, qxy
@@ -10309,7 +10309,7 @@ class PTAmodels(object):
                     NiGcNiGcr = np.dot(NiGc, GcNiGcr)
 
                 except np.linalg.LinAlgError:
-                    print "MAJOR ERROR"
+                    print("MAJOR ERROR")
 
                 # F^TG(G^TNG)^{-1}G^T\delta t
                 # if ct == 0:
@@ -10325,7 +10325,7 @@ class PTAmodels(object):
 
             # compute sigma
             nf = self.npftot[ct]
-            print nf
+            print(nf)
             Sigma = FGGNGGF[ct] + \
                 self.Phiinv[nfref:(nfref + nf), nfref:(nfref + nf)]
             Phi = np.diag(self.Phi[nfref:(nfref + nf)])
